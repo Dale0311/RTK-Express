@@ -13,7 +13,6 @@ app.use(cookieParser());
 
 app.get('/blogs');
 app.get('/blogs', (req, res) => {
-  console.log(req);
   res.json('Welcome to our api');
 });
 
