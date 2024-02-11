@@ -13,3 +13,5 @@ router.post('/', addNewBlog);
 router.get('/:id', getBlog);
 router.put('/:id', updateBlog);
 router.delete('/:id', deleteBlog);
+
+export default router;
