@@ -1,6 +1,10 @@
 import React from 'react';
-
+import axios from 'axios';
 function AddNewBlog() {
+  const sampleClick = async () => {
+    const res = await axios.get('http://localhost:5500/blogs');
+    console.log(res);
+  };
   return (
     <div className="space-y-4 border p-4 rounded">
       <h1 className="text-xl font-bold">Add new blog: </h1>
@@ -26,7 +30,10 @@ function AddNewBlog() {
         <button className="px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded">
           Clear
         </button>
-        <button className="px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded">
+        <button
+          className="px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded"
+          onClick={sampleClick}
+        >
           Add
         </button>
       </div>
