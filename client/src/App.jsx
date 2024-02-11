@@ -1,10 +1,10 @@
-function App() {
-  const [count, setCount] = useState(0);
+import Blogs from './features/blogs/Blogs';
 
+function App() {
   return (
-    <>
-      <h1>hellow world</h1>
-    </>
+    <div className="w-1/2 mx-auto mt-10">
+      <Blogs />
+    </div>
   );
 }
 
