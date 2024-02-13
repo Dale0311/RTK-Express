@@ -1,14 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const baseQ = fetchBaseQuery({
-  baseUrl: 'http://localhost:5500',
-  //add prepare headers when dealing with jwt auth
-});
-
-const apiSlice = createApi({
+export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: baseQ,
-  endpoints: {},
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'http://localhost:5500',
+  }),
+  endpoints: (builder) => ({}),
+  tagTypes: ['Blogs', 'Users'],
 });
-
-export default apiSlice;

@@ -2,6 +2,7 @@ import Blog from '../models/Blogs.model.js';
 export const getAllBlogs = async (req, res) => {
   try {
     const blogs = await Blog.find();
+    console.log(blogs);
     res.status(200).json(blogs);
   } catch (error) {
     res.sendStatus(500);

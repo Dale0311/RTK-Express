@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-
+import { apiSlice } from './apiSlice';
 const store = configureStore({
-  reducer: {},
+  reducer: {
+    [apiSlice.reducerPath]: apiSlice.reducer,
+  },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(pokemonApi.middleware),
+    getDefaultMiddleware().concat(apiSlice.middleware),
 });
 
 export default store;

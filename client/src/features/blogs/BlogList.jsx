@@ -1,19 +1,32 @@
 import React from 'react';
+import { useGetBlogsQuery } from './blogSlice';
+import { useSelector } from 'react-redux';
+import BlogExcerpt from './BlogExcerpt';
 
 function BlogList() {
-  return (
-    <div className="flex flex-col space-y-3">
-      <div className="p-4 text-lg bg-slate-300 rounded hover:bg-slate-400 hover:cursor-pointer">
-        <h1>Lorem, ipsum dolor.</h1>
+  const {
+    data: blogList,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetBlogsQuery();
+  let content;
+
+  if (isLoading) {
+    content = <h1>Loading...</h1>;
+  } else if (isError) {
+    content = <h1>Error: {error}</h1>;
+  } else if (isSuccess) {
+    content = (
+      <div className='className="flex flex-col space-y-3"'>
+        {blogList?.map((blog) => {
+          return <BlogExcerpt key={blog._id} blog={blog} />;
+        })}
       </div>
-      <div className="p-4 text-lg bg-slate-300 rounded hover:bg-slate-400 hover:cursor-pointer">
-        <h1>Lorem, dolor Lorem.</h1>
-      </div>
-      <div className="p-4 text-lg bg-slate-300 rounded hover:bg-slate-400 hover:cursor-pointer">
-        <h1>Lorem, Lorem Lorem.</h1>
-      </div>
-    </div>
-  );
+    );
+  }
+  return <>{content}</>;
 }
 
 export default BlogList;
