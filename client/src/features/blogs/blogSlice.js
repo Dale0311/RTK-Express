@@ -19,7 +19,7 @@ export const blogSlice = apiSlice.injectEndpoints({
               { type: 'Blogs', id: 'LIST' },
               ...res.map(({ id }) => ({ type: 'Blogs', id })),
             ]
-          : ['Blogs'];
+        : ['Blogs'];
       },
     }),
     getBlog: builder.query({
