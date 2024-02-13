@@ -20,7 +20,7 @@ function BlogList() {
     content = (
       <div className='className="flex flex-col space-y-3"'>
         {blogList?.map((blog) => {
-          return <BlogExcerpt key={blog._id} blog={blog} />;
+          return <BlogExcerpt key={blog.id} blog={blog} />;
         })}
       </div>
     );

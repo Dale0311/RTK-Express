@@ -4,16 +4,33 @@ export const blogSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getBlogs: builder.query({
       query: () => '/blogs',
+      transformResponse: (res) => {
+        const orderedRes = res
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .map((blog) => {
+            const { _id, ...res } = blog;
+            return { ...res, id: _id };
+          });
+        return orderedRes;
+      },
+      providesTags: (res, err, args) => {
+        return res
+          ? [
+              { type: 'Blogs', id: 'LIST' },
+              ...res.map(({ id }) => ({ type: 'Blogs', id })),
+            ]
+          : ['Blogs'];
+      },
     }),
     getBlog: builder.query({
       query: (id) => `/blogs/${id}`,
     }),
     addBlog: builder.mutation({
-      query: (blog) => {
-        url: '/blogs';
-        method: 'POST';
-        body: blog;
-      },
+      query: (blog) => ({
+        url: `/blogs`,
+        method: 'post',
+        body: blog,
+      }),
       invalidatesTags: ['Blogs'],
     }),
     updateBlog: builder.mutation({
@@ -41,3 +58,5 @@ export const {
   useDeleteBlogMutation,
   useUpdateBlogMutation,
 } = blogSlice;
+
+

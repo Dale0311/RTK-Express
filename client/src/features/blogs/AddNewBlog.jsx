@@ -1,10 +1,19 @@
-import React from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { useAddBlogMutation } from './blogSlice';
+
 function AddNewBlog() {
-  const handleClick = async () => {
-    const res = await axios.get('http://localhost:5500/blogs');
-    console.log(res);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [addBlog, { isLoading }] = useAddBlogMutation();
+  const canAdd = [title, content].every(Boolean) && !isLoading;
+  const handleClickAdd = async () => {
+    if (canAdd) {
+      await addBlog({ title, content });
+      setTitle('');
+      setContent('');
+    }
   };
+
   return (
     <div className="space-y-4 border p-4 rounded">
       <h1 className="text-xl font-bold">Add new blog: </h1>
@@ -14,6 +23,8 @@ function AddNewBlog() {
           name="title"
           id="title"
           placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           className="p-2 rounded flex-1 border border-slate-400"
         />
       </div>
@@ -23,6 +34,8 @@ function AddNewBlog() {
           name="content"
           id="content"
           placeholder="Content"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
           className="p-2 rounded flex-1 border border-slate-400"
         />
       </div>
@@ -32,7 +45,7 @@ function AddNewBlog() {
         </button>
         <button
           className="px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded"
-          onClick={handleClick}
+          onClick={handleClickAdd}
         >
           Add
         </button>

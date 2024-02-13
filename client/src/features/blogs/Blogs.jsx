@@ -1,6 +1,7 @@
 import React from 'react';
 import BlogList from './BlogList';
 import AddNewBlog from './AddNewBlog';
+
 function Blogs() {
   return (
     <div className="space-y-4">
