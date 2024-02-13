@@ -1,6 +1,5 @@
 import React from 'react';
 import { useGetBlogsQuery } from './blogSlice';
-import { useSelector } from 'react-redux';
 import BlogExcerpt from './BlogExcerpt';
 
 function BlogList() {

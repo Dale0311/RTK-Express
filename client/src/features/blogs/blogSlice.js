@@ -1,39 +1,43 @@
 import { apiSlice } from '../../app/api/apiSlice';
-import { createSelector, createEntityAdapter } from '@reduxjs/toolkit';
 
-// const blogsAdapter = createEntityAdapter({
-//   sortComparer: (a, b) => a.title.localeCompare(b.title),
-// });
-// const initialState = blogsAdapter.getInitialState();
 export const blogSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getBlogs: builder.query({
       query: () => '/blogs',
-      providesTags: (result, error, arg) => [
-        { type: 'Blogs', id: 'LIST' },
-        ...result.map((id) => {
-          return { type: 'Blogs', id };
-        }),
-      ],
+    }),
+    getBlog: builder.query({
+      query: (id) => `/blogs/${id}`,
+    }),
+    addBlog: builder.mutation({
+      query: (blog) => {
+        url: '/blogs';
+        method: 'POST';
+        body: blog;
+      },
+      invalidatesTags: ['Blogs'],
+    }),
+    updateBlog: builder.mutation({
+      query: (blog) => {
+        url: `/blogs/${blog._id}`;
+        method: 'PUT';
+        body: blog;
+      },
+      invalidatesTags: ['Blogs'],
+    }),
+    deleteBlog: builder.mutation({
+      query: (id) => {
+        url: `/blogs/${id}`;
+        method: 'DELETE';
+      },
+      invalidatesTags: ['Blogs'],
     }),
   }),
 });
 
-export const { useGetBlogsQuery } = blogSlice;
-
-// export const selectBlogsResult = blogSlice.endpoints.getBlogs.select();
-
-// // Creates memoized selector
-// const selectBlogsData = createSelector(
-//   selectBlogsResult,
-//   (blogsResult) => blogsResult.data // normalized state object with ids & entities
-// );
-
-// export const {
-//   selectAll: selectAllBlogs,
-//   selectById: selectBlogById,
-//   selectIds: selectBlogIds,
-//   // Pass in a selector that returns the posts slice of state
-// } = blogsAdapter.getSelectors(
-//   (state) => selectBlogsData(state) ?? initialState
-// );
+export const {
+  useGetBlogsQuery,
+  useGetBlogQuery,
+  useAddBlogMutation,
+  useDeleteBlogMutation,
+  useUpdateBlogMutation,
+} = blogSlice;
