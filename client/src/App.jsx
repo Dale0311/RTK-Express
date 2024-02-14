@@ -11,6 +11,7 @@ import About from './pages/About';
 import Blogs from './features/blogs/Blogs';
 import Blog from './features/blogs/Blog';
 import _404 from './components/404';
+import EditBlog from './features/blogs/EditBlog';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -21,6 +22,7 @@ const router = createBrowserRouter(
         <Route path="blogs">
           <Route index element={<Blogs />} />
           <Route path=":id" element={<Blog />} />
+          <Route path="edit/:id" element={<EditBlog />} />
         </Route>
         <Route path="*" element={<_404 />} />
       </Route>

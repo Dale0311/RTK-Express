@@ -23,5 +23,21 @@ export const addNewBlog = async (req, res) => {
   res.sendStatus(201);
 };
 
-export const updateBlog = async (req, res) => {};
+export const updateBlog = async (req, res) => {
+  const { id } = req.params;
+  const { title, content } = req.body;
+  if (!id) return res.sendStatus(400);
+  if (!title || !content) return res.sendStatus(400);
+  try {
+    const updatedBlog = await Blog.findOneAndUpdate(
+      { _id: id },
+      { title, content },
+      { new: true }
+    );
+    console.log(updatedBlog);
+    res.status(200).json(updatedBlog);
+  } catch (error) {
+    res.sendStatus(404);
+  }
+};
 export const deleteBlog = async (req, res) => {};
