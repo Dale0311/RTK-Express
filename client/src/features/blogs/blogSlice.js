@@ -43,10 +43,10 @@ export const blogSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['Blogs'],
     }),
     deleteBlog: builder.mutation({
-      query: (id) => {
-        url: `/blogs/${id}`;
-        method: 'DELETE';
-      },
+      query: (id) => ({
+        url: `/blogs/${id}`,
+        method: 'delete',
+      }),
       invalidatesTags: ['Blogs'],
     }),
   }),

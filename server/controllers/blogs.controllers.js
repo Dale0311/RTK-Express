@@ -34,10 +34,18 @@ export const updateBlog = async (req, res) => {
       { title, content },
       { new: true }
     );
-    console.log(updatedBlog);
     res.status(200).json(updatedBlog);
   } catch (error) {
     res.sendStatus(404);
   }
 };
-export const deleteBlog = async (req, res) => {};
+export const deleteBlog = async (req, res) => {
+  const { id } = req.params;
+  if (!id) return res.sendStatus(400);
+  try {
+    await Blog.findOneAndDelete({ _id: id });
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(304);
+  }
+};

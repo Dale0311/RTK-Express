@@ -10,13 +10,16 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Blogs from './features/blogs/Blogs';
 import Blog from './features/blogs/Blog';
-import _404 from './components/404';
 import EditBlog from './features/blogs/EditBlog';
+
+// components
+import _404 from './components/404';
+import Layout from './components/Layout';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      <Route>
+      <Route element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="blogs">
