@@ -22,7 +22,7 @@ const router = createBrowserRouter(
           <Route index element={<Blogs />} />
           <Route path=":id" element={<Blog />} />
         </Route>
-        <Route path="*" element={_404} />
+        <Route path="*" element={<_404 />} />
       </Route>
     </Route>
   )
