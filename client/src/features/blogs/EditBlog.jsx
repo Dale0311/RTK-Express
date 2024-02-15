@@ -1,9 +1,15 @@
 import { useParams, Navigate, Link, useNavigate } from 'react-router-dom';
-import { useGetBlogQuery, useUpdateBlogMutation } from './blogSlice';
+import {
+  selectBlogById,
+  useGetBlogQuery,
+  useUpdateBlogMutation,
+} from './blogSlice';
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 function EditBlog() {
   const { id } = useParams();
-  const { data: blog, isLoading, isError, isSuccess } = useGetBlogQuery(id);
+  const blog = useSelector((state) => selectBlogById(state, id));
+  const { isLoading, isError, isSuccess } = useGetBlogQuery(id);
   const [updateBlog] = useUpdateBlogMutation();
   const navigate = useNavigate();
   const [title, setTitle] = useState('');

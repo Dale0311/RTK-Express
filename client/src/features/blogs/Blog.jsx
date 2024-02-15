@@ -5,6 +5,7 @@ import { formatTimestamp } from '../../utils/formatTimestamps';
 import { FaEdit } from 'react-icons/fa';
 import Modal from '../../components/Modal';
 import { useSelector } from 'react-redux';
+
 function Blog() {
   const { id } = useParams();
   if (!id) return <Navigate to={'/blogs'} />;

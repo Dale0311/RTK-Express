@@ -8,7 +8,6 @@ export default function Modal({ id }) {
   const navigate = useNavigate();
   const handleClickConfirm = async () => {
     try {
-      console.log(id);
       await deleteBlog(id);
       setShowModal(false);
       navigate('/blogs');

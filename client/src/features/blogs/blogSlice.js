@@ -1,24 +1,24 @@
 import { apiSlice } from '../../app/api/apiSlice';
-import { createSelector } from '@reduxjs/toolkit';
+import { createSelector, createEntityAdapter } from '@reduxjs/toolkit';
+
+const blogsAdapter = createEntityAdapter({
+  selectId: (blog) => blog._id,
+  sortComparer: (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+});
+const initialState = blogsAdapter.getInitialState();
 
 export const blogSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getBlogs: builder.query({
       query: () => '/blogs',
       transformResponse: (res) => {
-        const orderedRes = res
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .map((blog) => {
-            const { _id, ...res } = blog;
-            return { ...res, id: _id };
-          });
-        return orderedRes;
+        return blogsAdapter.setAll(initialState, res);
       },
       providesTags: (res, err, args) => {
         return res
           ? [
               { type: 'Blogs', id: 'LIST' },
-              ...res.map(({ id }) => ({ type: 'Blogs', id })),
+              ...res.ids.map(({ _id }) => ({ type: 'Blogs', _id })),
             ]
           : ['Blogs'];
       },
@@ -58,16 +58,26 @@ export const blogSlice = apiSlice.injectEndpoints({
 
 export const selectBlogsResult = blogSlice.endpoints.getBlogs.select();
 
-export const selectAllBlogs = createSelector(
+export const selectBlogsData = createSelector(
   selectBlogsResult,
-  (blogResult) => blogResult?.data ?? []
+  (blogResult) => blogResult?.data
 );
 
-export const selectBlogById = createSelector(
-  selectAllBlogs,
-  (state, blogId) => blogId,
-  (blogs, blogId) => blogs.find((blog) => blog.id === blogId)
+// export const selectBlogById = createSelector(
+//   selectAllBlogs,
+//   (state, blogId) => blogId,
+//   (blogs, blogId) => blogs.find((blog) => blog._id === blogId)
+// );
+
+export const {
+  selectAll: selectAllBlogs,
+  selectById: selectBlogById,
+  selectIds: selectBlogsIds,
+  selectEntities,
+} = blogsAdapter.getSelectors(
+  (state) => selectBlogsData(state) ?? initialState
 );
+
 export const {
   useGetBlogsQuery,
   useGetBlogQuery,

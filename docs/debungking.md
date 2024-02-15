@@ -1,3 +1,7 @@
+### debunking createEntityAdapter
+
+<a href="https://redux-toolkit.js.org/api/createEntityAdapter#parameters">Docs here</a>
+
 #### Understanding providing tags
 
 ```React
