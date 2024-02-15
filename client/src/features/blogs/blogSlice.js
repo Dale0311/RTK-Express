@@ -1,4 +1,5 @@
 import { apiSlice } from '../../app/api/apiSlice';
+import { createSelector } from '@reduxjs/toolkit';
 
 export const blogSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -40,7 +41,10 @@ export const blogSlice = apiSlice.injectEndpoints({
         method: 'put',
         body: rest,
       }),
-      invalidatesTags: ['Blogs'],
+      invalidatesTags: (res, err, args) => [
+        'Blogs',
+        { type: 'Blogs', id: args.id },
+      ],
     }),
     deleteBlog: builder.mutation({
       query: (id) => ({
@@ -52,6 +56,18 @@ export const blogSlice = apiSlice.injectEndpoints({
   }),
 });
 
+export const selectBlogsResult = blogSlice.endpoints.getBlogs.select();
+
+export const selectAllBlogs = createSelector(
+  selectBlogsResult,
+  (blogResult) => blogResult?.data ?? []
+);
+
+export const selectBlogById = createSelector(
+  selectAllBlogs,
+  (state, blogId) => blogId,
+  (blogs, blogId) => blogs.find((blog) => blog.id === blogId)
+);
 export const {
   useGetBlogsQuery,
   useGetBlogQuery,

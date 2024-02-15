@@ -1,15 +1,10 @@
 import React from 'react';
-import { useGetBlogsQuery } from './blogSlice';
+import { useGetBlogsQuery, selectAllBlogs } from './blogSlice';
 import BlogExcerpt from './BlogExcerpt';
-
+import { useSelector } from 'react-redux';
 function BlogList() {
-  const {
-    data: blogList,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useGetBlogsQuery();
+  const blogList = useSelector(selectAllBlogs);
+  const { isLoading, isSuccess, isError, error } = useGetBlogsQuery();
   let content;
 
   if (isLoading) {

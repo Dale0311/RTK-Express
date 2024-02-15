@@ -1,13 +1,15 @@
 import React from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { useGetBlogQuery } from './blogSlice';
+import { useGetBlogQuery, selectBlogById } from './blogSlice';
 import { formatTimestamp } from '../../utils/formatTimestamps';
 import { FaEdit } from 'react-icons/fa';
 import Modal from '../../components/Modal';
+import { useSelector } from 'react-redux';
 function Blog() {
   const { id } = useParams();
-  const { data: blog, isLoading, isError, isSuccess } = useGetBlogQuery(id);
   if (!id) return <Navigate to={'/blogs'} />;
+  const blog = useSelector((state) => selectBlogById(state, id));
+  const { isLoading, isError, isSuccess } = useGetBlogQuery(id);
 
   // content
   let content;
