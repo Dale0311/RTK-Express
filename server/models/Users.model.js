@@ -1,16 +1,16 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
-const blogsSchema = new Schema(
+const usersSchema = new Schema(
   {
-    title: {
+    email: {
       type: String,
       require: true,
     },
-    content: {
+    password: {
       type: String,
       require: true,
     },
-    usersId: {
+    displayName: {
       type: String,
       require: true,
     },
@@ -18,6 +18,6 @@ const blogsSchema = new Schema(
   { timestamps: true }
 );
 
-const Blog = mongoose.model('Blog', blogsSchema);
+const User = mongoose.model('User', usersSchema);
 
-export default Blog;
+export default User;
