@@ -4,7 +4,7 @@ TODOS: 02/15/2024 -
 
 modify the Blog model, add userID - done
 modify the addNewBlog action to also pass the userID - TBA
-remove the /blogs/edit/:id route and just create modal for Blog page
+remove the /blogs/edit/:id route and just create modal for Blog page - done
 
 ### create sign in and signup
 
