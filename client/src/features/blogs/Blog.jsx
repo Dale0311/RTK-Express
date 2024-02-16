@@ -3,7 +3,9 @@ import { useParams, Navigate, Link } from 'react-router-dom';
 import { useGetBlogQuery, selectBlogById } from './blogSlice';
 import { formatTimestamp } from '../../utils/formatTimestamps';
 import { FaEdit } from 'react-icons/fa';
-import Modal from '../../components/Modal';
+import DeleteBlog from '../../components/DeleteBlog.modal';
+import UpdateBlog from '../../components/UpdateBlog.modal';
+
 import { useSelector } from 'react-redux';
 
 function Blog() {
@@ -22,14 +24,11 @@ function Blog() {
       <div className="p-4 text-lg bg-slate-200 rounded space-y-2">
         <h1 className="text-xl font-bold">{blog.title}</h1>
         <p className="text-md">{blog.content}</p>
+
+        {/* Blog Modals */}
         <div className="text-lg flex space-x-2">
-          <Link to={`../edit/${id}`}>
-            <FaEdit
-              title="Edit blog"
-              className="text-blue-500 hover:text-blue-600"
-            />
-          </Link>
-          <Modal id={id} />
+          <UpdateBlog id={id} blog={blog} />
+          <DeleteBlog id={id} />
         </div>
         <p className="text-sm">{`Date: ${formattedDate}`}</p>
       </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import { FaTrash } from 'react-icons/fa';
 import { useDeleteBlogMutation } from '../features/blogs/blogSlice';
 import { useNavigate } from 'react-router-dom';
-export default function Modal({ id }) {
+export default function DeleteBlog({ id }) {
   const [showModal, setShowModal] = React.useState(false);
   const [deleteBlog] = useDeleteBlogMutation();
   const navigate = useNavigate();
