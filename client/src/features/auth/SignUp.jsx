@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { useSignUpMutation } from './authSlice';
 
 function SignUp() {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [signUp, { error }] = useSignUpMutation();
   const handleChange = (e) => {
@@ -16,27 +14,13 @@ function SignUp() {
   };
   const canSubmit = [form.email, form.password, form.username].every(Boolean);
   const handleSubmit = async () => {
-    // not working
-    // await signUp(form)
-    //   .unwrap()
-    //   .then((res) => {
-    //     console.log(res, 'sadds');
-    //     navigate('/signin');
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-
-    
-    // not working
-    // try {
-    //   await signUp(form).unwrap();
-    //   console.log('using unwrap not reading this');
-    //   setForm({ username: '', email: '', password: '' });
-    //   navigate('/signin');
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      await signUp(form).unwrap();
+      setForm({ username: '', email: '', password: '' });
+      navigate('/signin');
+    } catch (error) {
+      setForm((oldVal) => ({ ...oldVal, password: '' }));
+    }
   };
 
   return (
@@ -62,11 +46,7 @@ function SignUp() {
               onChange={(e) => handleChange(e)}
               id="email"
             />
-            {error?.message ? (
-              <p className="text-sm text-red-500">{error?.message}</p>
-            ) : (
-              ''
-            )}
+            {error ? <p className="text-sm text-red-500">{error}</p> : ''}
           </div>
           <input
             type="password"

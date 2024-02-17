@@ -9,13 +9,12 @@ export const signUpController = async (req, res) => {
   const userExist = await User.findOne({ email }).exec();
   console.log(userExist);
   if (userExist) {
-    console.log('userexist');
     return res.status(400).json({ message: 'email already exist' });
   }
   const hashedPwd = await bcrypt.hash(password, 10);
   try {
     await User.create({ username, email, password: hashedPwd });
-    res.sendStatus(201);
+    res.status(201).json({ message: 'success' });
   } catch (error) {
     res.sendStatus(400);
   }
