@@ -7,7 +7,7 @@ function SignUp() {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [signUp] = useSignUpMutation();
+  const [signUp, { error }] = useSignUpMutation();
   const handleChange = (e) => {
     const { id, value } = e.target;
     setForm((oldForm) => {
@@ -15,10 +15,30 @@ function SignUp() {
     });
   };
   const canSubmit = [form.email, form.password, form.username].every(Boolean);
-  const handleSubmit = (e) => {
-    signUp(form);
-    e.preventDefault();
+  const handleSubmit = async () => {
+    // not working
+    // await signUp(form)
+    //   .unwrap()
+    //   .then((res) => {
+    //     console.log(res, 'sadds');
+    //     navigate('/signin');
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+
+    
+    // not working
+    // try {
+    //   await signUp(form).unwrap();
+    //   console.log('using unwrap not reading this');
+    //   setForm({ username: '', email: '', password: '' });
+    //   navigate('/signin');
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
+
   return (
     <div className="w-full">
       <div className="">
@@ -32,15 +52,22 @@ function SignUp() {
             onChange={(e) => handleChange(e)}
             id="username"
           />
-          <input
-            type="email"
-            className="p-4 border rounded bg-slate-100"
-            placeholder="Email"
-            required
-            value={form.email}
-            onChange={(e) => handleChange(e)}
-            id="email"
-          />
+          <div className="flex flex-col">
+            <input
+              type="email"
+              className="p-4 border rounded bg-slate-100"
+              placeholder="Email"
+              required
+              value={form.email}
+              onChange={(e) => handleChange(e)}
+              id="email"
+            />
+            {error?.message ? (
+              <p className="text-sm text-red-500">{error?.message}</p>
+            ) : (
+              ''
+            )}
+          </div>
           <input
             type="password"
             className="p-4 border rounded bg-slate-100"

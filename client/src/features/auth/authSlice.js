@@ -11,17 +11,17 @@ export const authSlice = apiSlice.injectEndpoints({
     }),
     signUp: builder.mutation({
       query: (creds) => {
-        console.log('it is from the slice');
-        console.log(creds);
         return {
-          url: '/signup',
+          url: '/auth/signup',
           method: 'post',
           body: creds,
         };
+      },
+      transformErrorResponse: (err) => {
+        return err.data;
       },
     }),
   }),
 });
 
 export const { useSignInMutation, useSignUpMutation } = authSlice;
-export const user = (state) => state.user;

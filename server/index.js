@@ -10,8 +10,8 @@ import corsOptions from './config/corsOption.js';
 import connectDb from './config/connectDb.js';
 
 // route
-import blogsroutes from './routes/blogs.route.js';
-
+import blogsRoutes from './routes/blogs.route.js';
+import authRoutes from './routes/auth.route.js';
 // middlewares
 const app = express();
 const PORT = 5500;
@@ -22,7 +22,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 // routes
-app.use('/blogs', blogsroutes);
+app.use('/auth', authRoutes);
+app.use('/blogs', blogsRoutes);
 
 // listener
 mongoose.connection.once('open', () => {
