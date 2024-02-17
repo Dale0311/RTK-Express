@@ -10,11 +10,12 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Blogs from './features/blogs/Blogs';
 import Blog from './features/blogs/Blog';
+import SignIn from './features/auth/SignIn';
+import SignUp from './features/auth/SignUp';
 
 // components
 import _404 from './components/404';
 import Layout from './components/Layout';
-import SignIn from './features/auth/SignIn';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,6 +28,7 @@ const router = createBrowserRouter(
           <Route path=":id" element={<Blog />} />
         </Route>
         <Route path="signin" element={<SignIn />} />
+        <Route path="signup" element={<SignUp />} />
         <Route path="*" element={<_404 />} />
       </Route>
     </Route>

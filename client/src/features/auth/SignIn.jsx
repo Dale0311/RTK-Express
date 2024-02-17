@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 function SignIn() {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -32,7 +32,7 @@ function SignIn() {
             <input
               type="email"
               className="p-4 border rounded bg-slate-100"
-              placeholder="email"
+              placeholder="Email"
               id="email"
               required={true}
               onChange={(e) => handleChange(e)}

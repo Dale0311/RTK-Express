@@ -10,7 +10,7 @@ const usersSchema = new Schema(
       type: String,
       require: true,
     },
-    displayName: {
+    username: {
       type: String,
       require: true,
     },
