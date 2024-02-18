@@ -34,9 +34,21 @@ export const signInController = async (req, res) => {
     return res.sendStatus(401);
   }
   try {
-    const { password, ...rest } = userExist._doc;
-    const accessToken = jwt.sign(rest, process.env.ACCESS_TOKEN, {
-      expiresIn: '30min',
-    });
+    const accessToken = jwt.sign(
+      { email: userExist.email },
+      process.env.ACCESS_TOKEN,
+      {
+        expiresIn: '30m',
+      }
+    );
+    const refreshToken = jwt.sign(
+      { email: userExist.email },
+      process.env.ACCESS_TOKEN,
+      {
+        expiresIn: '3h',
+      }
+    );
+
+    // return a res with refresh token in cookie and accessToken in res
   } catch (error) {}
 };
