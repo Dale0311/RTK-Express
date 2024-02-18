@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import User from '../models/Users.model.js';
 export const signUpController = async (req, res) => {
   // validation if all fields have values
@@ -7,7 +8,6 @@ export const signUpController = async (req, res) => {
     res.sendStatus(400);
   }
   const userExist = await User.findOne({ email }).exec();
-  console.log(userExist);
   if (userExist) {
     return res.status(400).json({ message: 'email already exist' });
   }
@@ -23,7 +23,7 @@ export const signUpController = async (req, res) => {
 export const signInController = async (req, res) => {
   const { password, email } = req.body;
   if (!password || !email) {
-    res.sendStatus(400);
+    return res.sendStatus(400);
   }
   const userExist = await User.findOne({ email }).exec();
   if (!userExist) {
@@ -33,4 +33,10 @@ export const signInController = async (req, res) => {
   if (!match) {
     return res.sendStatus(401);
   }
+  try {
+    const { password, ...rest } = userExist._doc;
+    const accessToken = jwt.sign(rest, process.env.ACCESS_TOKEN, {
+      expiresIn: '30min',
+    });
+  } catch (error) {}
 };
