@@ -19,3 +19,18 @@ export const signUpController = async (req, res) => {
     res.sendStatus(400);
   }
 };
+
+export const signInController = async (req, res) => {
+  const { password, email } = req.body;
+  if (!password || !email) {
+    res.sendStatus(400);
+  }
+  const userExist = await User.findOne({ email }).exec();
+  if (!userExist) {
+    return res.sendStatus(404);
+  }
+  const match = bcrypt.compare(password, userExist.password);
+  if (!match) {
+    return res.sendStatus(401);
+  }
+};
