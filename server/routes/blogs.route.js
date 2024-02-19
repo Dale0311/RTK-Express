@@ -10,6 +10,7 @@ import { verifyJWT } from '../middlewares/verifyJWT.js';
 const router = express.Router();
 
 router.get('/', getAllBlogs);
+
 router.use(verifyJWT);
 router.post('/', addNewBlog);
 router.get('/:id', getBlog);

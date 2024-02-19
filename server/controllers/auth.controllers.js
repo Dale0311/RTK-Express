@@ -43,7 +43,7 @@ export const signInController = async (req, res) => {
     { email: userExist.email },
     process.env.ACCESS_TOKEN,
     {
-      expiresIn: '5s',
+      expiresIn: '30m',
     }
   );
   const refreshToken = jwt.sign(
