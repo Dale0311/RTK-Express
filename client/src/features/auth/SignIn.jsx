@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useSignInMutation } from './authApiSlice';
+import { setCredentials } from './authSlice';
 
 function SignIn() {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -22,7 +23,13 @@ function SignIn() {
     if (!canSubmit) {
       return setErrMess('All fields are required');
     }
-    await signIn(form); // to be stored in authReducer
+    try {
+      const { accessToken } = await signIn(form).unwrap();
+      dispatch(setCredentials({ accessToken }));
+      navigate('/blogs');
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className="w-full">

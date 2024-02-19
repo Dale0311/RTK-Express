@@ -18,6 +18,7 @@ export const getBlog = async (req, res) => {
 
 export const addNewBlog = async (req, res) => {
   const { title, content } = req.body;
+  console.log(req.userEmail);
   if (!title || !content) return res.sendStatus(401);
   await Blog.create({ title, content });
   res.sendStatus(201);

@@ -7,7 +7,6 @@ import { blogSlice } from './features/blogs/blogSlice.js';
 import store from './app/api/store.js';
 
 store.dispatch(blogSlice.endpoints.getBlogs.initiate());
-// store.dispatch(blogSlice.endpoints.getBlogs.initiate());
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>

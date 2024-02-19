@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { FaEdit } from 'react-icons/fa';
 import { useUpdateBlogMutation } from '../features/blogs/blogSlice';
-import { useNavigate } from 'react-router-dom';
 function UpdateBlog({ id, blog }) {
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState(blog?.title);
   const [blogContent, setBlogContent] = useState(blog?.content);
   const [updateBlog] = useUpdateBlogMutation();
-  const navigate = useNavigate();
 
   const onUpdateClick = async () => {
     try {

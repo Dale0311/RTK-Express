@@ -59,6 +59,7 @@ export const signInController = async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true, // only server can access it
     sameSite: 'None', // cross site cookie or they can access it even if the uri of the api and client is not the same
+    secure: true,
   });
   res.json({ accessToken });
 };
