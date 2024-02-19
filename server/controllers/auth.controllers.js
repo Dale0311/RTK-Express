@@ -43,7 +43,7 @@ export const signInController = async (req, res) => {
     { email: userExist.email },
     process.env.ACCESS_TOKEN,
     {
-      expiresIn: '1h',
+      expiresIn: '5s',
     }
   );
   const refreshToken = jwt.sign(
@@ -64,9 +64,25 @@ export const signInController = async (req, res) => {
   res.json({ accessToken });
 };
 
-// export const refresh = (req, res) => {
-//   const cookies = req.cookies;
-//   if (!cookies?.jwt) return res.sendStatus(401);
-//   const refreshToken = cookies.jwt;
-//   jwt.verify(refreshToken, process.env.REFRESH_TOKEN);
-// };
+export const refresh = (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies?.jwt) return res.sendStatus(401);
+  const refreshToken = cookies.jwt;
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN, async (err, decoded) => {
+    if (err) return res.status(403).json({ message: 'Forbidden' });
+
+    const userExist = await User.findOne({ email: decoded.email }).exec();
+
+    if (!userExist) return res.status(401).json({ message: 'Unauthorized' });
+
+    const accessToken = jwt.sign(
+      {
+        email: userExist.email,
+      },
+      process.env.ACCESS_TOKEN,
+      { expiresIn: '1h' }
+    );
+
+    res.json({ accessToken });
+  });
+};
