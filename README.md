@@ -28,3 +28,7 @@ redirect if not log in
 
 1. delete the blog route and retrieve all the blogs of the user if the user click his/her profile
 2. show sign in instead if the user is not currently signed in
+
+### generating random 64 random character for env virables
+
+require("crypto").randomBytes(64).toString("hex")

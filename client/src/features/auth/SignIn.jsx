@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { useSignInMutation } from './authApiSlice';
 
 function SignIn() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [errMess, setErrMess] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [signIn] = useSignInMutation();
   const handleChange = (e) => {
     const { id, value } = e.target;
     setForm((oldForm) => {
@@ -15,13 +17,12 @@ function SignIn() {
   };
 
   const canSubmit = [form.email, form.password].every(Boolean);
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
     if (!canSubmit) {
       return setErrMess('All fields are required');
     }
-
-    // create endpoint for userApi
+    await signIn(form); // to be stored in authReducer
   };
   return (
     <div className="w-full">
@@ -34,7 +35,6 @@ function SignIn() {
               className="p-4 border rounded bg-slate-100"
               placeholder="Email"
               id="email"
-              required={true}
               onChange={(e) => handleChange(e)}
             />
           </div>

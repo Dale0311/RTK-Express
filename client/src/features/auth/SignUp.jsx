@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSignUpMutation } from './authSlice';
+import { useSignUpMutation } from './authApiSlice';
 
 function SignUp() {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
