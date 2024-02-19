@@ -1,6 +1,17 @@
 import React from 'react';
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { selectToken } from '../features/auth/authSlice';
+import { useSelector } from 'react-redux';
+import { useLogOutMutation } from '../features/auth/authApiSlice';
+
 const Layout = () => {
+  const user = useSelector(selectToken);
+  const [logOut] = useLogOutMutation();
+  const navigate = useNavigate();
+  const handleLogoutClick = async () => {
+    await logOut();
+    navigate('/signin');
+  };
   return (
     <div className="space-y-2">
       <nav className="bg-indigo-400 p-4 text-white font-semibold">
@@ -12,7 +23,11 @@ const Layout = () => {
             <NavLink to={'blogs'}>Blogs</NavLink>
           </li>
           <li>
-            <NavLink to={'signin'}>Sign in</NavLink>
+            {user ? (
+              <p onClick={handleLogoutClick}>Log out</p>
+            ) : (
+              <NavLink to={'signin'}>Sign in</NavLink>
+            )}
           </li>
         </ul>
       </nav>
