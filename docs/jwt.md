@@ -5,34 +5,32 @@
 - create accessToken and refreshToken .env
 - @signinController: create instances of tokens using jwt.sig
 
-```
-nodejs
+```node
 // if userExist
 const accessToken = jwt.sign(
-    { email: userExist.email },
-    process.env.ACCESS_TOKEN,
-    {
-        expiresIn: '30m',
-    }
+  { email: userExist.email },
+  process.env.ACCESS_TOKEN,
+  {
+    expiresIn: '30m',
+  }
 );
 const refreshToken = jwt.sign(
-    { email: userExist.email },
-    process.env.REFRESH_TOKEN,
-    {
-        expiresIn: '3d',
-    }
+  { email: userExist.email },
+  process.env.REFRESH_TOKEN,
+  {
+    expiresIn: '3d',
+  }
 );
 ```
 
 - return a res and cookie
 
-```
-node
+```node
 res.cookie('jwt', refreshToken, {
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true, // only server can access it
-    sameSite: 'None', // cross site cookie or they can access it even if the uri of the api and client is not the same
-    secure: true,
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  httpOnly: true, // only server can access it
+  sameSite: 'None', // cross site cookie or they can access it even if the uri of the api and client is not the same
+  secure: true,
 });
 res.json({ accessToken });
 ```
@@ -41,9 +39,7 @@ res.json({ accessToken });
 
 - initialize slice
 
-```
-node
-
+```node
 import { createSlice } from '@reduxjs/toolkit';
 
 export const authSlice = createSlice({
@@ -51,7 +47,6 @@ export const authSlice = createSlice({
   initialState: { token: null },
   reducers: {},
 });
-
 ```
 
 - create reducers for setting up state that holds our token and logout
@@ -70,9 +65,7 @@ reducers: {
 
 - exports reducers and selector
 
-```
-node
-
+```node
 export const { logOut, setCredentials } = authSlice.actions; // to be use in our entire application
 export default authSlice.reducer; //to be use in our store
 
@@ -81,9 +74,7 @@ export const selectToken = (state) => state.auth.token; // to be use for protect
 
 ##### @frontend customize fetch base query
 
-```
-node
-
+```node
 const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:5500',
   credentials: 'include',
@@ -170,4 +161,31 @@ router.post('/', addNewBlog);
 router.get('/:id', getBlog);
 ```
 
-<!-- continuation to refresh token -->
+- create a refresh route and controller
+
+```node
+router.get('/refresh', refresh);
+
+export const refresh = (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies?.jwt) return res.sendStatus(401);
+  const refreshToken = cookies.jwt;
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN, async (err, decoded) => {
+    if (err) return res.status(403).json({ message: 'Forbidden' });
+
+    const userExist = await User.findOne({ email: decoded.email }).exec();
+
+    if (!userExist) return res.status(401).json({ message: 'Unauthorized' });
+
+    const accessToken = jwt.sign(
+      {
+        email: userExist.email,
+      },
+      process.env.ACCESS_TOKEN,
+      { expiresIn: '1h' }
+    );
+
+    res.json({ accessToken });
+  });
+};
+```
