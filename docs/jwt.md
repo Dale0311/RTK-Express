@@ -126,7 +126,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
 - pass our baseQueryWithReauth in our apiSlice
 
-##### @backend - since our succeeding request includes our accessToken and refreshToken
+##### @backend - create a middleware that verifies jwt.
 
 1. accessToken being pass to prepareHeaders
 2. refreshToken being pass to cookie //httpOnly
@@ -161,11 +161,80 @@ router.post('/', addNewBlog);
 router.get('/:id', getBlog);
 ```
 
-- create a refresh route and controller
+##### @backend - create routes and controllers for each signin, signup, refresh, logout
 
 ```node
+router.post('/signup', signUpController);
+router.post('/signin', signInController);
 router.get('/refresh', refresh);
+router.get('/logout', logout);
 
+//signupController
+export const signUpController = async (req, res) => {
+  // validation if all fields have values
+  const { username, password, email } = req.body;
+  if (!username || !password || !email) {
+    res.sendStatus(400);
+  }
+  const userExist = await User.findOne({ email }).exec();
+  if (userExist) {
+    return res.status(400).json({ message: 'email already exist' });
+  }
+  const hashedPwd = await bcrypt.hash(password, 10);
+  try {
+    await User.create({ username, email, password: hashedPwd });
+    res.status(201).json({ message: 'success' });
+  } catch (error) {
+    res.sendStatus(400);
+  }
+};
+
+//signInController
+export const signInController = async (req, res) => {
+  const { password, email } = req.body;
+
+  // validations
+  if (!password || !email) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  const userExist = await User.findOne({ email }).exec();
+
+  if (!userExist) {
+    return res.status(404).json({ message: 'No found user' });
+  }
+  const match = await bcrypt.compare(password, userExist.password);
+  if (!match) {
+    return res.status(401).json({ message: 'Invalid email or password' });
+  }
+
+  // if userExist
+  const accessToken = jwt.sign(
+    { email: userExist.email },
+    process.env.ACCESS_TOKEN,
+    {
+      expiresIn: '30m',
+    }
+  );
+  const refreshToken = jwt.sign(
+    { email: userExist.email },
+    process.env.REFRESH_TOKEN,
+    {
+      expiresIn: '3d',
+    }
+  );
+
+  // return a res with refresh token in cookie and accessToken in res
+  res.cookie('jwt', refreshToken, {
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true, // only server can access it
+    sameSite: 'None', // cross site cookie or they can access it even if the uri of the api and client is not the same
+    secure: true,
+  });
+  res.json({ accessToken });
+};
+
+//refreshController
 export const refresh = (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.jwt) return res.sendStatus(401);
@@ -188,4 +257,82 @@ export const refresh = (req, res) => {
     res.json({ accessToken });
   });
 };
+
+export const logout = (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies?.jwt) return res.sendStatus(204); //No content
+  res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+  res.json({ message: 'Cookie cleared' });
+};
+```
+
+##### @frontend - create a reducers that sends a request for every route that we create in our api
+
+```node
+// signin action @authApiSlice
+ signIn: builder.mutation({
+      query: (creds) => ({
+        url: '/auth/signin',
+        method: 'post',
+        body: creds,
+      }),
+    }),
+```
+
+```node
+// signup action @authApiSlice
+signUp: builder.mutation({
+      query: (creds) => {
+        return {
+          url: '/auth/signup',
+          method: 'post',
+          body: creds,
+        };
+      },
+      transformErrorResponse: (error) => {
+        return error?.data?.message;
+      },
+    }),
+```
+
+```node
+// refresh action @authApiSlice
+refresh: builder.mutation({
+      query: () => ({
+        url: '/auth/refresh',
+        method: 'get',
+      }),
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          console.log(data);
+          const { accessToken } = data;
+          dispatch(setCredentials({ accessToken }));
+        } catch (err) {
+          console.log(err);
+        }
+      },
+    }),
+```
+
+```node
+// logout action @authApiSlice
+logOut: builder.mutation({
+      query: () => ({
+        url: '/auth/logout',
+        method: 'get',
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          console.log(data);
+          dispatch(logOut());
+          setTimeout(() => {
+            dispatch(apiSlice.util.resetApiState());
+          }, 1000);
+        } catch (err) {
+          console.log(err);
+        }
+      },
+    }),
 ```
